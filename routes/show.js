@@ -1,5 +1,6 @@
 const express = require("express")
 const { Show } = require("../models/index")
+const { check, validationResult } = require('express-validator')
 
 const router = express.Router()
 
@@ -17,22 +18,21 @@ router.get("/:id", async function (request, response) {
     response.json(shows)
 })
 
-
-
 // UPDATE the status of a show
-router.put('/:status', async (req, res) => {
-    const findShow = await Show.findByPk(req.params.status)
-    await Show.update(req.body, {
-        where:
-        {
-            status: findShow.status
-        }
+router.put('/:status', [check("status").not().trim().isEmpty().trim().isLength({ min: 5, max: 25 }).trim()],
+    async (req, res) => {
+        const findShow = await Show.findByPk(req.params.status)
+        await Show.update(req.body, {
+            where:
+            {
+                status: findShow.status
+            }
+        })
+        res.json(await Show.findAll())
     })
-    res.json(await Show.findAll())
-})
 
 // Update the rating
-router.put('/:rating', async (req, res) => {
+router.put('/:rating', [check("rating").not().trim().isEmpty().trim()], async (req, res) => {
     const findShow = await Show.findByPk(req.params.rating)
     await Show.update(req.body, {
         where:
