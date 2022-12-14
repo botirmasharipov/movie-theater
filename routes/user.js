@@ -1,5 +1,5 @@
 const express = require("express")
-const { User } = require("../models/index")
+const { User, Show } = require("../models/index")
 
 const router = express.Router()
 
@@ -11,4 +11,26 @@ router.get("/", async function (request, response) {
     const users = await User.findAll()
     response.json(users)
 })
+
+// Get one user
+router.get("/:id", async function (request, response) {
+    const user = await User.findByPk(request.params.id)
+    response.json(user)
+})
+
+// GET all shows watched by a user (user id in req.params)
+
+// PUT update and add a show if a user has watched it
+router.put('/:id', async (req, res) => {
+    const findUser = await User.findByPk(req.params.id)
+    await User.update(req.body, {
+        where:
+        {
+            id: findUser.id
+        }
+    })
+    res.json(await User.findAll())
+})
+
 module.exports = router
+
