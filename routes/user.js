@@ -27,17 +27,11 @@ router.get("/:id/shows", async function (request, response) {
 })
 
 // PUT update and add a show if a user has watched it
-router.put('/:id/:showId', async (req, res) => {
-    let findUser = await User.findByPk(req.params.id)
-    const findShow = await Show.findByPk(req.params.showId)
+router.put('/:id/shows/:showId', async (req, res) => {
+    let user = await User.findByPk(req.params.id)
+    const show = await Show.findByPk(req.params.showId)
     await user.addShow(show)
-    user = await User.update(req.body, {
-        where:
-        {
-            id: findUser.id
-        }
-    })
-    res.json(await User.findAll())
+    res.json(await User.findAll({ include: Show }))
 })
 
 module.exports = router
