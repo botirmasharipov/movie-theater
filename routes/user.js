@@ -20,15 +20,18 @@ router.get("/:id", async function (request, response) {
 
 // GET all shows watched by a user (user id in req.params)
 router.get("/:id/shows", async function (request, response) {
-    const user = await User.findByPk(request.params.id)
-    response.json(user)
+    const user = await User.findByPk(request.params.id, {
+        include: Show
+    })
+    response.json(user.shows)
 })
 
 // PUT update and add a show if a user has watched it
-router.put('/:id/shows/:showId', async (req, res) => {
-    const findUser = await User.findByPk(req.params.id)
+router.put('/:id/:showId', async (req, res) => {
+    let findUser = await User.findByPk(req.params.id)
     const findShow = await Show.findByPk(req.params.showId)
-    await User.update(req.body, {
+    await user.addShow(show)
+    user = await User.update(req.body, {
         where:
         {
             id: findUser.id
